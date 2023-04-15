@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 db = SQLAlchemy()
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:mysecretpassword@localhost:5432/postgres'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///kvd.db'
 
 db.init_app(app)
 
