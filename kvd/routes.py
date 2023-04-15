@@ -1,5 +1,5 @@
 from flask.blueprints import Blueprint
-from flask import request
+from flask import request, send_from_directory
 
 import json
 
@@ -8,15 +8,21 @@ from kvd.upload import Upload
 
 routes = Blueprint('routes', __name__)
 
+
 @routes.route('/')
-def index():
+def serve_index():
+    return send_from_directory('static', 'index.html')
+
+
+@routes.route('/<path:path>')
+def serve_assets(path: str):
     if request.headers.get('Content-Type') == 'application/json':
         return Upload.list_all()
 
-    return 'Hello, World!'
+    return send_from_directory('static', path)
 
 
-@routes.route('/<string:key>', methods=['GET', 'POST', 'DELETE'])
+@routes.route('/uploads/<string:key>', methods=['GET', 'POST', 'DELETE'])
 def handle_upload(key: str):
     if request.method == 'POST':
         Upload(key, request.data, request.content_type).update()
@@ -30,7 +36,7 @@ def handle_upload(key: str):
 
     return upload.data
 
-@routes.route('/<string:key>/metadata')
+@routes.route('/uploads/<string:key>/metadata')
 def handle_metadata(key: str):
     upload = Upload.get(key)
     if upload is None:
