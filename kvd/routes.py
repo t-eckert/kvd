@@ -1,9 +1,6 @@
+from flask import request, send_from_directory, Response
 from flask.blueprints import Blueprint
-from flask import request, send_from_directory
 
-import json
-
-from kvd.app import db
 from kvd.upload import Upload
 
 routes = Blueprint('routes', __name__)
@@ -32,15 +29,16 @@ def handle_upload(key: str):
 
     upload = Upload.get(key)
     if upload is None:
-        return 'Not found', 404
+        return Response('Not found', 404)
 
-    return upload.data
+    return  Response(upload.data, 200, {'Content-Type': upload.content_type})
+
 
 @routes.route('/uploads/<string:key>/metadata')
 def handle_metadata(key: str):
     upload = Upload.get(key)
     if upload is None:
-        return 'Not found', 404
+        return Response('Not found', 404)
 
-    return upload.meta()
+    return Response(upload.meta(), 200, {'Content-Type': 'application/json'})
 
