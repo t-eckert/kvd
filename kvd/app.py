@@ -11,7 +11,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///kvd.db'
 db.init_app(app)
 CORS(app)
 
-from kvd.upload import Upload
+from kvd.upload import Upload # noqa
 
 with app.app_context():
     db.create_all()
